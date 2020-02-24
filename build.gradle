@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.amazonaws:aws-java-sdk:1.11.433'
+    compile 'com.google.code.gson:gson:2.8.5'
+}
+
+project.ext.com = 'true'
+//project.ext.chooseMain = 'SQS'
+
+task runProject(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    if (project.hasProperty('com')){
+        if (chooseMain == 'SQS'){
+            main = 'com.aws.sqs.SQSQueue'
+            mainClassName = 'com.aws.sqs.SQSQueue'
+        } else if (chooseMain == 'SNS') {
+            main = 'com.aws.sns.SNSService'
+            mainClassName = 'com.aws.sns.SNSService'
+        } else if (chooseMain == 'SetupSQSSNS') {
+            main = 'com.sample.SetupSQSSNS'
+            mainClassName = 'com.sample.SetupSQSSNS'
+        } else {
+            main = 'com.amazonaws.samples.S3Sample'
+            mainClassName = 'com.amazonaws.samples.S3Sample'
+        }
+        println 'Running: ' + chooseMain + ' ' + main + '...'
+    } else {
+        println 'please pass the main name '
+    }
+}
+
+defaultTasks 'clean', 'build', 'run'
